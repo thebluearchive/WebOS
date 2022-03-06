@@ -1,0 +1,65 @@
+﻿.taskbar {
+    position: absolute;
+    bottom: 0px;
+    height: 35px;
+    display: flex;
+    width: 100%;
+}
+
+.taskbar-container {
+    position: absolute;
+    bottom: 0px;
+    height: 35px;
+    display: flex;
+    align-content: stretch;
+    width: 100%;
+    padding: 4px 4px;
+}
+
+.taskbar-programs-list {
+    display: flex;
+    overflow: hidden;
+    flex: 1;
+}
+
+.taskbar-program {
+    max-width: 100px;
+    padding: 0px 10px;
+    margin-left: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.taskbar-status {
+    padding: 0px 10px;
+}
+
+.skin {
+    background-color: #c0c0c0;
+    border-top-color: #e2f2f3;
+    border-style: ridge;
+    border-bottom-width: 0px;
+    border-right-width: 0px;
+    border-left-width: 0px;
+}
+
+.start-button {
+    padding: 0px 10px;
+    display: flex;
+    align-content: center;
+    align-self: center;
+}
+
+.start-button-img {
+    align-self:center;
+    padding: 0px 5px 0px 0px;
+}
+
+.start-menu {
+    position: absolute;
+    width: 250px;
+    height: 400px;
+    bottom: 35px;
+    background-color: black;
+}

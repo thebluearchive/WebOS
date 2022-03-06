@@ -1,0 +1,9 @@
+﻿
+.background {
+    background-color: #008080;
+    position:absolute;
+    top: 0px;
+    z-index: -10;
+    height: 100%;
+    width: 100%;
+}

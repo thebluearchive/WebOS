@@ -1,0 +1,39 @@
+﻿
+
+<div class="start-menu" hidden="@(!IsStartMenuVisible)"></div>
+<footer class="taskbar skin">
+    <div class="taskbar-container">
+        <button class="start-button" @onclick="StartButtonClicked">
+            <img class="start-button-img" src="images/StartMenu.png"/>
+            <div>Start</div>
+        </button>
+        <div class="taskbar-programs-list">
+            <button class="taskbar-program">
+                <div>Program 1</div>
+            </button>
+            <button class="taskbar-program">
+                <div>Program 2</div>
+            </button>
+            <button class="taskbar-program">
+                <div>Program 3</div>
+            </button>
+            <button class="taskbar-program">
+                <div>Program 4</div>
+            </button>
+            <button class="taskbar-program">
+                <div>Very long program name</div>
+            </button>
+        </div>
+        <div class="taskbar-status">
+            task right container
+        </div>
+    </div>
+</footer>
+
+@code {
+    private bool IsStartMenuVisible { get; set; } = false;
+    private void StartButtonClicked()
+    {
+        IsStartMenuVisible = !IsStartMenuVisible;
+    }
+}
