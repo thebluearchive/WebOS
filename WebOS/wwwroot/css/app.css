@@ -16,6 +16,15 @@ button:active {
     box-shadow: inset 1px 1px gray,1px 0 #fff,0 1px #fff,1px 1px #fff
 }
 
+.skin {
+    background-color: #c0c0c0;
+    border-top-color: #e2f2f3;
+    border-style: ridge;
+    border-bottom-width: 0px;
+    border-right-width: 0px;
+    border-left-width: 0px;
+}
+
 @font-face {
     font-family: 'microsoft_sans_serifbook';
     src: url('/font/ms_sans_serif_8pt-webfont.woff2') format('woff2'), url('/font/ms_sans_serif_8pt-webfont.woff') format('woff');

@@ -1,9 +1,12 @@
 ﻿
+<StartMenu @ref=startMenu>
+</StartMenu>
 
-<div class="start-menu" hidden="@(!IsStartMenuVisible)"></div>
 <footer class="taskbar skin">
     <div class="taskbar-container">
-        <button class="start-button" @onclick="StartButtonClicked">
+        <button class="start-button"
+                id="start-button"
+                @onclick="StartButtonClicked">
             <img class="start-button-img" src="images/StartMenu.png"/>
             <div>Start</div>
         </button>
@@ -25,15 +28,15 @@
             </button>
         </div>
         <div class="taskbar-status">
-            task right container
+            @DateTime.Now.ToString("hh:mm tt")
         </div>
     </div>
 </footer>
 
 @code {
-    private bool IsStartMenuVisible { get; set; } = false;
-    private void StartButtonClicked()
+    private StartMenu startMenu;
+    private async Task StartButtonClicked()
     {
-        IsStartMenuVisible = !IsStartMenuVisible;
+        await startMenu.ToggleStartMenu();
     }
 }

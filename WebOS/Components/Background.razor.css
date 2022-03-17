@@ -1,6 +1,7 @@
 ﻿
 .background {
-    background-color: #008080;
+    background-image: url("images/windows98-bg.png");
+    background-position: center;
     position:absolute;
     top: 0px;
     z-index: -10;

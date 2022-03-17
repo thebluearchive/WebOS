@@ -23,7 +23,7 @@
 }
 
 .taskbar-program {
-    max-width: 100px;
+    max-width: 120px;
     padding: 0px 10px;
     margin-left: 5px;
     overflow: hidden;
@@ -35,15 +35,6 @@
     padding: 0px 10px;
 }
 
-.skin {
-    background-color: #c0c0c0;
-    border-top-color: #e2f2f3;
-    border-style: ridge;
-    border-bottom-width: 0px;
-    border-right-width: 0px;
-    border-left-width: 0px;
-}
-
 .start-button {
     padding: 0px 10px;
     display: flex;
@@ -52,14 +43,6 @@
 }
 
 .start-button-img {
-    align-self:center;
+    align-self: center;
     padding: 0px 5px 0px 0px;
-}
-
-.start-menu {
-    position: absolute;
-    width: 250px;
-    height: 400px;
-    bottom: 35px;
-    background-color: black;
 }
