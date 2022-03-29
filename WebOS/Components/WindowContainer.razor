@@ -1,0 +1,43 @@
+﻿<div class="window-container">
+     @*@ondragstart:preventDefault=true
+     @ondrag:preventDefault=true
+     @onmousemove=OnMouseMove
+     @onmouseup=MouseUp*@
+    @foreach (Window window in openWindows)
+    {
+        <Window></Window>
+    }
+</div>
+
+<button @onclick=OpenNewWindow>Open New Window</button>
+@*TODO: allow other components to open windows*@
+@*This Component might not be necessary*@
+
+@code {
+    private List<Window> openWindows = new();
+    private void OpenNewWindow()
+    {
+        Window window = new();
+        openWindows.Add(window);
+    }
+
+    //private void OnMouseMove(MouseEventArgs args)
+    //{
+    //    Console.WriteLine("MouseMove Fired");
+    //    if (!isWindowBeingDragged) return;
+
+    //    double offsetX = args.ClientX - windowBeingDragged.StartX;
+    //    double offsetY = args.ClientY - windowBeingDragged.StartY;
+    //    windowBeingDragged.XPos += offsetX;
+    //    windowBeingDragged.YPos += offsetY;
+    //    windowBeingDragged.StartX = args.ClientX;
+    //    windowBeingDragged.StartY = args.ClientY;
+    //}
+
+    //private void MouseUp(MouseEventArgs args)
+    //{
+    //    Console.WriteLine("MouseUp Fired");
+    //    if (!isWindowBeingDragged) return;
+    //    windowBeingDragged.isBeingDragged = false;
+    //}
+}

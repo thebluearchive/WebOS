@@ -1,0 +1,98 @@
+﻿@inject IJSRuntime JS
+
+<div class="program-container"
+     style="width:@String.Concat(Width, "%"); height:@String.Concat(Height, "%"); 
+     top: @String.Concat(YPos, "px"); left: @String.Concat(XPos, "px");"
+     hidden=@(!visible)>
+    <div class="title-bar skin"
+         @onmousedown="StartDrag"
+         id=@id.ToString()>
+        <btn class="button title-bar-button"
+             @onclick="Close">
+            x
+         </btn>
+        <btn class="button title-bar-button"
+             @onclick="Maximize">
+            []
+         </btn>
+        <btn class="button title-bar-button"
+             @onclick="Minimize">
+            --
+        </btn>
+    </div>
+    <div class="program-body skin">
+        @ChildContent
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+    [Parameter]
+    public int Width { get; set; } = 20;
+    [Parameter]
+    public int Height { get; set; } = 20;
+    [Parameter]
+    public double XPos { get; set; } = 200;
+    [Parameter]
+    public double YPos { get; set; } = 200;
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+    [Parameter]
+    public EventCallback OnMaximize { get; set; }
+    [Parameter]
+    public EventCallback OnMinimize { get; set; }
+
+    private bool visible = true;
+    private DotNetObjectReference<Window>? dotNetHelper;
+    private IJSObjectReference? jsModule;
+    private Guid id = Guid.NewGuid();
+    /// <summary>
+    /// Window drag variables
+    /// </summary>
+    public double StartX, StartY;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        dotNetHelper = DotNetObjectReference.Create(this);
+        jsModule = await JS.InvokeAsync<IJSObjectReference>("import", "./Components/Window.razor.js");
+    }
+
+    private async Task Close()
+    {
+        await OnClose.InvokeAsync();
+    }
+
+    private void Maximize()
+    {
+        XPos = 0;
+        YPos = 0;
+        Width = 100;
+        Height = 100;
+    }
+
+    private void Minimize()
+    {
+        visible = false;
+    }
+
+    private async Task StartDrag(MouseEventArgs args)
+    {
+        StartX = args.ClientX;
+        StartY = args.ClientY;
+        await jsModule.InvokeVoidAsync("dragStart", dotNetHelper);
+    }
+
+    [JSInvokable]
+    public void MouseMove(double clientX, double clientY)
+    {
+        double offsetX = clientX - StartX;
+        double offsetY = clientY - StartY;
+        XPos += offsetX;
+        YPos += offsetY;
+        StartX = clientX;
+        StartY = clientY;
+        StateHasChanged();
+    }
+}
