@@ -32,6 +32,10 @@ button:active {
     font-style: normal;
 }
 
+body {
+    overflow: hidden; /* Hide scrollbars */
+}
+
 body, html, button, div, p {
     font-family: 'microsoft_sans_serifbook';
     font-size: 14px;

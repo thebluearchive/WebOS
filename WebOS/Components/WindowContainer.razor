@@ -1,43 +1,31 @@
-﻿<div class="window-container">
-     @*@ondragstart:preventDefault=true
-     @ondrag:preventDefault=true
-     @onmousemove=OnMouseMove
-     @onmouseup=MouseUp*@
-    @foreach (Window window in openWindows)
+﻿@inject IWindowManager windowManager
+
+<div class="window-container">
+    @foreach (KeyValuePair<Window, int> pair in windowManager.OpenWindows)
     {
-        <Window></Window>
+        <Window OnWindowClosed="() => CloseWindow(pair.Key)"
+                ZIndex=@pair.Value
+                OnWindowFocused="() => BringToTop(pair.Key)">
+        </Window>
     }
 </div>
 
 <button @onclick=OpenNewWindow>Open New Window</button>
-@*TODO: allow other components to open windows*@
 @*This Component might not be necessary*@
 
 @code {
-    private List<Window> openWindows = new();
     private void OpenNewWindow()
     {
-        Window window = new();
-        openWindows.Add(window);
+        windowManager.OpenNewWindow();
     }
 
-    //private void OnMouseMove(MouseEventArgs args)
-    //{
-    //    Console.WriteLine("MouseMove Fired");
-    //    if (!isWindowBeingDragged) return;
+    private void CloseWindow(Window window)
+    {
+        windowManager.CloseWindow(window);
+    }
 
-    //    double offsetX = args.ClientX - windowBeingDragged.StartX;
-    //    double offsetY = args.ClientY - windowBeingDragged.StartY;
-    //    windowBeingDragged.XPos += offsetX;
-    //    windowBeingDragged.YPos += offsetY;
-    //    windowBeingDragged.StartX = args.ClientX;
-    //    windowBeingDragged.StartY = args.ClientY;
-    //}
-
-    //private void MouseUp(MouseEventArgs args)
-    //{
-    //    Console.WriteLine("MouseUp Fired");
-    //    if (!isWindowBeingDragged) return;
-    //    windowBeingDragged.isBeingDragged = false;
-    //}
+    private void BringToTop(Window window)
+    {
+        windowManager.BringToTop(window);
+    }
 }

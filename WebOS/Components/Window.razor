@@ -1,9 +1,11 @@
 ﻿@inject IJSRuntime JS
 
 <div class="program-container"
-     style="width:@String.Concat(Width, "%"); height:@String.Concat(Height, "%"); 
-     top: @String.Concat(YPos, "px"); left: @String.Concat(XPos, "px");"
-     hidden=@(!visible)>
+     style="width:@Width; height:@Height; 
+        top: @String.Concat(YPos, "px"); left: @String.Concat(XPos, "px");
+        z-index:@ZIndex;"
+     hidden=@(!visible)
+     @onmousedown=WindowFocused>
     <div class="title-bar skin"
          @onmousedown="StartDrag"
          id=@id.ToString()>
@@ -29,20 +31,20 @@
     [Parameter]
     public RenderFragment ChildContent { get; set; }
     [Parameter]
-    public int Width { get; set; } = 20;
+    public string Width { get; set; } = "400px";
     [Parameter]
-    public int Height { get; set; } = 20;
+    public string Height { get; set; } = "400px";
     [Parameter]
     public double XPos { get; set; } = 200;
     [Parameter]
     public double YPos { get; set; } = 200;
     [Parameter]
-    public EventCallback OnClose { get; set; }
+    public int ZIndex { get; set; } = 0;
     [Parameter]
-    public EventCallback OnMaximize { get; set; }
+    public EventCallback OnWindowClosed { get; set; }
     [Parameter]
-    public EventCallback OnMinimize { get; set; }
-
+    public EventCallback OnWindowFocused { get; set; }
+    private WindowState windowState = WindowState.Windowed;
     private bool visible = true;
     private DotNetObjectReference<Window>? dotNetHelper;
     private IJSObjectReference? jsModule;
@@ -61,24 +63,40 @@
 
     private async Task Close()
     {
-        await OnClose.InvokeAsync();
+        // It is the responsibility of the window manager to close
+        // the window
+        await OnWindowClosed.InvokeAsync();
     }
 
     private void Maximize()
     {
+        if (windowState == WindowState.Windowed)
+        {
+            windowState = WindowState.Maximized;
+        }
+        else if (windowState == WindowState.Maximized)
+        {
+            windowState = WindowState.Windowed;
+        }
         XPos = 0;
         YPos = 0;
-        Width = 100;
-        Height = 100;
+        Width = "100%";
+        Height = "100%";
     }
 
     private void Minimize()
     {
+        windowState = WindowState.Minimized;
         visible = false;
     }
 
     private async Task StartDrag(MouseEventArgs args)
     {
+        // Cannot drag a maximized window
+        if (windowState == WindowState.Maximized)
+        {
+            return;
+        }
         StartX = args.ClientX;
         StartY = args.ClientY;
         await jsModule.InvokeVoidAsync("dragStart", dotNetHelper);
@@ -94,5 +112,11 @@
         StartX = clientX;
         StartY = clientY;
         StateHasChanged();
+    }
+
+    private async Task WindowFocused(MouseEventArgs args)
+    {
+        
+        await OnWindowFocused.InvokeAsync();
     }
 }

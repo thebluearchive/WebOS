@@ -16,5 +16,4 @@ export function dragEnd(e) {
     
     document.removeEventListener('mousemove', dragMove);
     document.removeEventListener('mouseup', dragEnd);
-    //DotNetHelper.invokeMethodAsync('MouseUp', e.clientX, e.clientY);
 }
