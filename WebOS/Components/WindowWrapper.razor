@@ -4,9 +4,11 @@
 <div class="program-container"
      style="width:@Window.Width; height:@Window.Height; 
         top: @String.Concat(Window.YPos, "px"); left: @String.Concat(Window.XPos, "px");
-        z-index:@Window.ZIndex;"
+        z-index:@Window.ZIndex; cursor:@cursorStyle;"
      hidden=@(!Window.Visible)
-     @onmousedown=WindowFocused>
+     @onmousedown=WindowFocused
+     @onmousemove=MouseMoved
+     @ref=programContainer>
     <div class="title-bar skin"
          @onmousedown="StartDrag">
          <div class="title">
@@ -40,12 +42,15 @@
     [Parameter]
     public EventCallback<Window> OnWindowFocused { get; set; }
 
+    private ElementReference programContainer;
     private DotNetObjectReference<WindowWrapper>? dotNetHelper;
     private IJSObjectReference? jsModule;
     /// <summary>
     /// Window drag variables
     /// </summary>
-    public double StartX, StartY;
+    private double StartX, StartY;
+    private static int MARGIN = 4;
+    private string cursorStyle = "auto";
 
     protected override async Task OnInitializedAsync()
     {
@@ -81,5 +86,40 @@
     private async Task WindowFocused(MouseEventArgs args)
     {
         await OnWindowFocused.InvokeAsync(Window);
+    }
+
+    private async Task MouseMoved(MouseEventArgs args)
+    {
+        double pixelWidth = await jsModule.InvokeAsync<double>("getElementWidth", programContainer);
+        double pixelHeight = await jsModule.InvokeAsync<double>("getElementHeight", programContainer);
+        bool onLeftBorder = Math.Abs(args.ClientX - Window.XPos) < MARGIN;
+        bool onRightBorder = Math.Abs(args.ClientX - Window.XPos - pixelWidth) < MARGIN;
+        bool onTopBorder = Math.Abs(args.ClientY - Window.YPos) < MARGIN;
+        bool onBottomBorder = Math.Abs(args.ClientY - Window.YPos - pixelHeight) < MARGIN;
+        bool onTopLeftCorner = onTopBorder && onLeftBorder;
+        bool onTopRightCorner = onTopBorder && onRightBorder;
+        bool onBottomLeftCorner = onBottomBorder && onLeftBorder;
+        bool onBottomRightCorner = onBottomBorder && onRightBorder;
+
+        if (onTopLeftCorner || onBottomRightCorner)
+        {
+            cursorStyle = "nwse-resize";
+        }
+        else if (onTopRightCorner || onBottomLeftCorner)
+        {
+            cursorStyle = "nesw-resize";
+        }
+        else if (onLeftBorder || onRightBorder)
+        {
+            cursorStyle = "ew-resize";
+        }
+        else if (onTopBorder || onBottomBorder)
+        {
+            cursorStyle = "ns-resize";
+        }
+        else
+        {
+            cursorStyle = "auto";
+        }
     }
 }

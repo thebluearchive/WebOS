@@ -13,7 +13,14 @@ export function dragMove(e) {
 };
 
 export function dragEnd(e) {
-    
     document.removeEventListener('mousemove', dragMove);
     document.removeEventListener('mouseup', dragEnd);
-}
+};
+
+export function getElementWidth(element) {
+    return element.clientWidth;
+};
+
+export function getElementHeight(element) {
+    return element.clientHeight;
+};
