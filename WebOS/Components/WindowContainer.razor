@@ -1,22 +1,30 @@
 ﻿@inject IWindowManager windowManager
 
 <div class="window-container">
-    @foreach (KeyValuePair<Window, int> pair in windowManager.OpenWindows)
+    @foreach (Window window in windowManager.OpenWindows)
     {
-        <Window OnWindowClosed="() => CloseWindow(pair.Key)"
-                ZIndex=@pair.Value
-                OnWindowFocused="() => BringToTop(pair.Key)">
-        </Window>
+        <WindowWrapper Window=window
+                OnWindowFocused=BringToTop
+                OnWindowClosed=CloseWindow>
+        </WindowWrapper>
     }
 </div>
 
 <button @onclick=OpenNewWindow>Open New Window</button>
-@*This Component might not be necessary*@
 
 @code {
+    protected override void OnInitialized()
+    {
+        windowManager.OnOpenWindowsChanged += (obj, args) => StateHasChanged();
+    }
+
     private void OpenNewWindow()
     {
-        windowManager.OpenNewWindow();
+        Window window = new();
+        //TODO: move the window naming code elsewhere
+        window.Name = $"Test Program {windowManager.OpenWindows.Count}";
+        window.OnWindowStateChanged += (obj, args) => StateHasChanged();
+        windowManager.OpenNewWindow(window);
     }
 
     private void CloseWindow(Window window)

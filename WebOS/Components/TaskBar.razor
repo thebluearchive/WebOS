@@ -1,4 +1,4 @@
-﻿
+﻿@inject IWindowManager windowManager
 <StartMenu @ref=startMenu>
 </StartMenu>
 
@@ -11,21 +11,13 @@
             <div>Start</div>
         </button>
         <div class="taskbar-programs-list">
-            <button class="taskbar-program">
-                <div>Program 1</div>
-            </button>
-            <button class="taskbar-program">
-                <div>Program 2</div>
-            </button>
-            <button class="taskbar-program">
-                <div>Program 3</div>
-            </button>
-            <button class="taskbar-program">
-                <div>Program 4</div>
-            </button>
-            <button class="taskbar-program">
-                <div>Very long program name</div>
-            </button>
+            @foreach(Window window in windowManager.OpenWindows)
+            {
+                <button class="taskbar-program"
+                        @onclick=window.Minimize>
+                    <div>@window.Name</div>
+                </button>
+            }
         </div>
         <div class="taskbar-status">
             @DateTime.Now.ToString("hh:mm tt")
@@ -35,6 +27,13 @@
 
 @code {
     private StartMenu startMenu;
+
+    protected override void OnInitialized()
+    {
+        // Update taskbar window list
+        windowManager.OnOpenWindowsChanged += (obj, args) => StateHasChanged();
+    }
+
     private async Task StartButtonClicked()
     {
         await startMenu.ToggleStartMenu();

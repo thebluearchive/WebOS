@@ -1,0 +1,85 @@
+﻿@inject IJSRuntime JS
+@inject IWindowManager windowManager
+
+<div class="program-container"
+     style="width:@Window.Width; height:@Window.Height; 
+        top: @String.Concat(Window.YPos, "px"); left: @String.Concat(Window.XPos, "px");
+        z-index:@Window.ZIndex;"
+     hidden=@(!Window.Visible)
+     @onmousedown=WindowFocused>
+    <div class="title-bar skin"
+         @onmousedown="StartDrag">
+         <div class="title">
+            @Window.Name
+         </div>
+         <div class="title-bar-button-container">
+            <btn class="button title-bar-button"
+                 @onclick="Window.Close">
+                x
+             </btn>
+            <btn class="button title-bar-button"
+                 @onclick="Window.Maximize">
+                []
+             </btn>
+            <btn class="button title-bar-button"
+                 @onclick="Window.Minimize">
+                --
+            </btn>
+         </div>
+    </div>
+    <div class="program-body skin">
+        @Window.ChildContent
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Window Window { get; set; }
+    [Parameter]
+    public EventCallback<Window> OnWindowClosed { get; set; }
+    [Parameter]
+    public EventCallback<Window> OnWindowFocused { get; set; }
+
+    private DotNetObjectReference<WindowWrapper>? dotNetHelper;
+    private IJSObjectReference? jsModule;
+    /// <summary>
+    /// Window drag variables
+    /// </summary>
+    public double StartX, StartY;
+
+    protected override async Task OnInitializedAsync()
+    {
+        dotNetHelper = DotNetObjectReference.Create(this);
+        jsModule = await JS.InvokeAsync<IJSObjectReference>("import", "./Components/WindowWrapper.razor.js");
+        Window.OnWindowStateChanged += (obj, args) => StateHasChanged();
+    }
+
+    private async Task StartDrag(MouseEventArgs args)
+    {
+        // Cannot drag a maximized window
+        if (Window.windowState == WindowState.Maximized)
+        {
+            return;
+        }
+        StartX = args.ClientX;
+        StartY = args.ClientY;
+        await jsModule.InvokeVoidAsync("dragStart", dotNetHelper);
+    }
+
+    [JSInvokable]
+    public void MouseMove(double clientX, double clientY)
+    {
+        double offsetX = clientX - StartX;
+        double offsetY = clientY - StartY;
+        Window.XPos += offsetX;
+        Window.YPos += offsetY;
+        StartX = clientX;
+        StartY = clientY;
+        StateHasChanged();
+    }
+
+    private async Task WindowFocused(MouseEventArgs args)
+    {
+        await OnWindowFocused.InvokeAsync(Window);
+    }
+}

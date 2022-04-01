@@ -6,9 +6,19 @@
 
 .title-bar {
     display: flex;
+    justify-content: space-between;
+    user-select: none;
+}
+
+.title {
+    display: flex;
+    gap: 20px;
+}
+
+.title-bar-button-container {
+    display: flex;
     flex-direction: row-reverse;
     gap: 20px;
-    user-select: none;
 }
 
 .title-bar-button {
