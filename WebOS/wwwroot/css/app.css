@@ -1,14 +1,16 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
-button {
+.win-btn {
     background-color: #c0c0c0;
     border-top: 1px solid #e2f2f3;
     border-left: 1px solid #e2f2f3;
     border-bottom: 1px solid #232323;
     border-right: 1px solid #232323;
     box-shadow: inset 1px 1px #dfdfdf, 1px 0 #000, 0 1px #000, 1px 1px #000;
+    color: black;
 }
-button:active {
+
+.win-btn:active {
     border-top: 1px solid #000;
     border-left: 1px solid #000;
     border-right: 1px solid #dfdfdf;

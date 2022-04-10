@@ -9,7 +9,7 @@ export function dragStart(dotNetHelper) {
 };
 
 export function dragMove(e) {
-    DotNetHelper.invokeMethodAsync('MouseMove', e.clientX, e.clientY);
+    DotNetHelper.invokeMethodAsync('DragMove', e.clientX, e.clientY);
 };
 
 export function dragEnd(e) {
@@ -24,3 +24,21 @@ export function getElementWidth(element) {
 export function getElementHeight(element) {
     return element.clientHeight;
 };
+
+
+// Window resize code
+export function windowResizeStart(dotNetHelper) {
+    document.addEventListener('mousemove', resizeMove);
+    document.addEventListener('mouseup', resizeEnd);
+    DotNetHelper = dotNetHelper;
+}
+
+export function resizeMove(e) {
+    DotNetHelper.invokeMethodAsync('ResizeMove', e.clientX, e.clientY);
+}
+
+export function resizeEnd(e) {
+    document.removeEventListener('mousemove', resizeMove);
+    document.removeEventListener('mousemove', resizeEnd);
+    //DotNetHelper.invokeMethodAsync('MouseUp', e);
+}

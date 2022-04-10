@@ -5,8 +5,8 @@ namespace WebOS
     public class Window
     {
         public RenderFragment ChildContent { get; set; }
-        public string Width { get; set; } = "400px";
-        public string Height { get; set; } = "400px";
+        public double Width { get; set; } = 400;
+        public double Height { get; set; } = 400;
         public double XPos { get; set; } = 200;
         public double YPos { get; set; } = 200;
         public int ZIndex { get; set; } = 0;
@@ -34,19 +34,20 @@ namespace WebOS
 
         public void Maximize()
         {
-            if (windowState == WindowState.Windowed)
-            {
-                windowState = WindowState.Maximized;
-            }
-            else if (windowState == WindowState.Maximized)
-            {
-                windowState = WindowState.Windowed;
-            }
-            XPos = 0;
-            YPos = 0;
-            Width = "100%";
-            Height = "100%";
-            OnWindowStateChanged?.Invoke(this, EventArgs.Empty);
+            throw new NotImplementedException();
+            //if (windowState == WindowState.Windowed)
+            //{
+            //    windowState = WindowState.Maximized;
+            //}
+            //else if (windowState == WindowState.Maximized)
+            //{
+            //    windowState = WindowState.Windowed;
+            //}
+            //XPos = 0;
+            //YPos = 0;
+            //Width = "100%";
+            //Height = "100%";
+            //OnWindowStateChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void Close()

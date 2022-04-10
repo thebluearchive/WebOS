@@ -2,7 +2,8 @@
 @inject IWindowManager windowManager
 
 <div class="program-container"
-     style="width:@Window.Width; height:@Window.Height; 
+     style="width:@String.Concat(Window.Width, "px");
+        height:@String.Concat(Window.Height, "px");
         top: @String.Concat(Window.YPos, "px"); left: @String.Concat(Window.XPos, "px");
         z-index:@Window.ZIndex; cursor:@cursorStyle;"
      hidden=@(!Window.Visible)
@@ -15,15 +16,15 @@
             @Window.Name
          </div>
          <div class="title-bar-button-container">
-            <btn class="button title-bar-button"
+            <btn class="win-btn title-bar-button"
                  @onclick="Window.Close">
-                x
+                X
              </btn>
-            <btn class="button title-bar-button"
+            <btn class="win-btn title-bar-button"
                  @onclick="Window.Maximize">
-                []
+                [&nbsp;&nbsp;&nbsp;]
              </btn>
-            <btn class="button title-bar-button"
+            <btn class="win-btn title-bar-button"
                  @onclick="Window.Minimize">
                 --
             </btn>
@@ -51,6 +52,7 @@
     private double StartX, StartY;
     private static int MARGIN = 4;
     private string cursorStyle = "auto";
+    private WindowBorder borderBeingDragged = WindowBorder.None;
 
     protected override async Task OnInitializedAsync()
     {
@@ -66,13 +68,17 @@
         {
             return;
         }
+        if (borderBeingDragged != WindowBorder.None)
+        {
+            return; // Resizing takes priority over dragging
+        }
         StartX = args.ClientX;
         StartY = args.ClientY;
         await jsModule.InvokeVoidAsync("dragStart", dotNetHelper);
     }
 
     [JSInvokable]
-    public void MouseMove(double clientX, double clientY)
+    public void DragMove(double clientX, double clientY)
     {
         double offsetX = clientX - StartX;
         double offsetY = clientY - StartY;
@@ -86,13 +92,24 @@
     private async Task WindowFocused(MouseEventArgs args)
     {
         await OnWindowFocused.InvokeAsync(Window);
+
+        if (borderBeingDragged != WindowBorder.None)
+        {
+            await jsModule.InvokeVoidAsync("windowResizeStart", dotNetHelper);
+        }
     }
 
-    private async Task MouseMoved(MouseEventArgs args)
+    public async Task MouseMoved(MouseEventArgs args)
     {
+        // Don't want to change the currently dragged border during a drag
+        if (args.Buttons % 2 == 1) // equivalent to if (leftMouseDown) {}
+        {
+            return;
+        }
+
         double pixelWidth = await jsModule.InvokeAsync<double>("getElementWidth", programContainer);
         double pixelHeight = await jsModule.InvokeAsync<double>("getElementHeight", programContainer);
-        bool onLeftBorder = Math.Abs(args.ClientX - Window.XPos) < MARGIN;
+        bool onLeftBorder = Math.Abs(args.ClientX- Window.XPos) < MARGIN;
         bool onRightBorder = Math.Abs(args.ClientX - Window.XPos - pixelWidth) < MARGIN;
         bool onTopBorder = Math.Abs(args.ClientY - Window.YPos) < MARGIN;
         bool onBottomBorder = Math.Abs(args.ClientY - Window.YPos - pixelHeight) < MARGIN;
@@ -101,25 +118,119 @@
         bool onBottomLeftCorner = onBottomBorder && onLeftBorder;
         bool onBottomRightCorner = onBottomBorder && onRightBorder;
 
-        if (onTopLeftCorner || onBottomRightCorner)
+        if (onTopLeftCorner)
         {
-            cursorStyle = "nwse-resize";
+            borderBeingDragged = WindowBorder.TopLeft;
         }
-        else if (onTopRightCorner || onBottomLeftCorner)
+        else if (onBottomRightCorner)
         {
-            cursorStyle = "nesw-resize";
+            borderBeingDragged = WindowBorder.BottomRight;
         }
-        else if (onLeftBorder || onRightBorder)
+        else if (onBottomLeftCorner)
         {
-            cursorStyle = "ew-resize";
+            borderBeingDragged = WindowBorder.BottomLeft;
         }
-        else if (onTopBorder || onBottomBorder)
+        else if (onTopRightCorner)
         {
-            cursorStyle = "ns-resize";
+            borderBeingDragged = WindowBorder.TopRight;
+        }
+        else if (onLeftBorder)
+        {
+            borderBeingDragged = WindowBorder.Left;
+        }
+        else if (onRightBorder)
+        {
+            borderBeingDragged = WindowBorder.Right;
+        }
+        else if (onTopBorder)
+        {
+            borderBeingDragged = WindowBorder.Top;
+        }
+        else if (onBottomBorder)
+        {
+            borderBeingDragged = WindowBorder.Bottom;
         }
         else
         {
-            cursorStyle = "auto";
+            borderBeingDragged = WindowBorder.None;
         }
+        await StyleCursor();
+    }
+
+    private async Task StyleCursor()
+    {
+        switch (borderBeingDragged)
+        {
+            case WindowBorder.TopLeft:
+            case WindowBorder.BottomRight:
+                cursorStyle = "nwse-resize";
+                break;
+            case WindowBorder.TopRight:
+            case WindowBorder.BottomLeft:
+                cursorStyle = "nesw-resize";
+                break;
+            case WindowBorder.Left:
+            case WindowBorder.Right:
+                cursorStyle = "ew-resize";
+                break;
+            case WindowBorder.Top:
+            case WindowBorder.Bottom:
+                cursorStyle = "ns-resize";
+                break;
+            default:
+                cursorStyle = "auto";
+                break;
+        }
+    }
+
+    [JSInvokable]
+    public async Task ResizeMove(double clientX, double clientY)
+    {
+        double pixelWidth = await jsModule.InvokeAsync<double>("getElementWidth", programContainer);
+        double pixelHeight = await jsModule.InvokeAsync<double>("getElementHeight", programContainer);
+        
+        // Compute movement
+        double deltaWidth = 0;
+        double deltaHeight = 0;
+        switch (borderBeingDragged)
+        {
+            case WindowBorder.TopLeft:
+                deltaWidth = Window.XPos - clientX;
+                deltaHeight = Window.YPos - clientY;
+                Window.XPos = clientX;
+                Window.YPos = clientY;
+                break;
+            case WindowBorder.TopRight:
+                deltaWidth = clientX - Window.XPos - pixelWidth;
+                deltaHeight = Window.YPos - clientY;
+                Window.YPos = clientY;
+                break;
+            case WindowBorder.BottomLeft:
+                deltaWidth = Window.XPos - clientX;
+                deltaHeight = clientY - Window.YPos - pixelHeight;
+                Window.XPos = clientX;
+                break;
+            case WindowBorder.BottomRight:
+                deltaWidth = clientX - Window.XPos - pixelWidth;
+                deltaHeight = clientY - Window.YPos - pixelHeight;
+                break;
+            case WindowBorder.Left:
+                deltaWidth = Window.XPos - clientX;
+                Window.XPos = clientX;
+                break;
+            case WindowBorder.Right:
+                deltaWidth = clientX - Window.XPos - pixelWidth;
+                break;
+            case WindowBorder.Top:
+                deltaHeight = Window.YPos - clientY;
+                Window.YPos = clientY;
+                break;
+            case WindowBorder.Bottom:
+                deltaHeight = clientY - Window.YPos - pixelHeight;
+                break;
+        }
+        Window.Width += deltaWidth;
+        Window.Height += deltaHeight;
+        StateHasChanged();
     }
 }

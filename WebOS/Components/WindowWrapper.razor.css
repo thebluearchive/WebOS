@@ -9,6 +9,11 @@
     display: flex;
     justify-content: space-between;
     user-select: none;
+    height: 30px;
+    align-items: center;
+    padding: 0px 4px 0px 4px;
+    background-color: blue;
+    color: white;
 }
 
 .title {
@@ -19,12 +24,15 @@
 .title-bar-button-container {
     display: flex;
     flex-direction: row-reverse;
-    gap: 20px;
+    gap: 2px;
 }
 
 .title-bar-button {
-    width: 40px;
-    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20px;
+    height: 20px;
 }
 
 .program-body {

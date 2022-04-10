@@ -4,7 +4,7 @@
 
 <footer class="taskbar skin">
     <div class="taskbar-container">
-        <button class="start-button"
+        <button class="start-button win-btn"
                 id="start-button"
                 @onclick="StartButtonClicked">
             <img class="start-button-img" src="images/StartMenu.png"/>
@@ -13,7 +13,7 @@
         <div class="taskbar-programs-list">
             @foreach(Window window in windowManager.OpenWindows)
             {
-                <button class="taskbar-program"
+                <button class="taskbar-program win-btn"
                         @onclick=window.Minimize>
                     <div>@window.Name</div>
                 </button>
