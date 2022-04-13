@@ -1,0 +1,82 @@
+﻿@inject IJSRuntime JSRuntime
+
+<WindowWrapper Window=Window OnWindowClosed=OnWindowClosed OnWindowFocused=OnWindowFocused>
+@*    <div class="menu">
+        <div class="dropdown">
+            <buton class="dropbtn">
+                File
+            </buton>
+            <ul class="dropdown-content">
+               <li>New</li> 
+               <li>New Window</li>
+               <li>Open...</li>
+               <li>Save</li>
+               <li>Save As...</li>
+               <li>Page Setup</li>
+               <li>Print</li>
+               <li>Exit</li>
+            </ul>
+        </div>
+        <div class="dropdown">
+            <buton class="dropbtn">
+                Edit
+            </buton>
+            <ul class="dropdown-content">
+               <li>Undo</li> 
+               <li>Cut</li>
+               <li>Copy</li>
+               <li>Paste</li>
+               <li>Delete</li>
+               <li>Select All</li>
+            </ul>
+        </div>
+        <div class="dropdown">
+            <buton class="dropbtn">
+                Format
+            </buton>
+            <ul class="dropdown-content">
+               <li>Word Wrap</li> 
+               <li>Font</li>
+            </ul>
+        </div>
+        <div class="dropdown">
+            <buton class="dropbtn">
+                View
+            </buton>
+            <ul class="dropdown-content">
+               <li>Zoom</li>
+               <li>Status Bar</li>
+               <li>Themes</li>
+            </ul>
+        </div>
+        <div class="dropdown">
+            <buton class="dropbtn">
+                Help
+            </buton>
+            <ul class="dropdown-content">
+               <li>View Help</li> 
+               <li>About Notepad</li>
+            </ul>
+        </div>
+    </div>*@
+    
+    <div class="text-editor-container" @ref=textEditorContainer></div>
+</WindowWrapper>
+
+@code {
+    [Parameter]
+    public Window Window { get; set; }
+    [Parameter]
+    public EventCallback<Window> OnWindowClosed { get; set; }
+    [Parameter]
+    public EventCallback<Window> OnWindowFocused { get; set; }
+
+    private ElementReference textEditorContainer;
+    private IJSObjectReference? jsModule;
+
+    protected async override Task OnInitializedAsync()
+    {
+        jsModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./Components/TextEditor.razor.js");
+        await jsModule.InvokeVoidAsync("createCodeMirror", textEditorContainer);
+    }
+}

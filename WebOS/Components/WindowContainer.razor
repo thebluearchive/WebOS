@@ -3,10 +3,11 @@
 <div class="window-container">
     @foreach (Window window in windowManager.OpenWindows)
     {
-        <WindowWrapper Window=window
-                OnWindowFocused=BringToTop
-                OnWindowClosed=CloseWindow>
-        </WindowWrapper>
+        <TextEditor Window=window
+            OnWindowFocused=BringToTop
+            OnWindowClosed=CloseWindow
+            @key=window>
+        </TextEditor>
     }
 </div>
 
