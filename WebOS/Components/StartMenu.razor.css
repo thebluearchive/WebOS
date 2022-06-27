@@ -1,6 +1,49 @@
 ﻿.start-menu {
+    display: flex;
+    flex-direction: row;
     position: absolute;
+    gap: 3px;
     width: 250px;
     height: 400px;
     bottom: 35px;
+}
+
+.start-menu-sidebar {
+    background: rgb(4,1,128);
+    background: linear-gradient(4deg, rgba(4,1,128,1) 0%, rgba(16,132,208,1) 100%);
+    padding-top: 10px;
+    padding-left: 3px;
+    display: flex;
+    flex-direction: row;
+    width: 35px;
+    /* background-color: darkblue; */
+    color: white;
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
+    font-size: larger;
+}
+
+.start-menu-shortcut-container {
+    grid-row: 1;
+    grid-column: 2;
+    width: 100%;
+}
+
+.start-menu-shortcut {
+    gap: 10px;
+    display: flex;
+    align-items: center;
+    height: 50px;
+    font-weight: bold;
+}
+
+.start-menu-shortcut:hover{
+    background-color:darkblue;
+    color:white;
+    font-weight:400;
+}
+
+.start-menu-icon {
+    width: 32px;
+    height: 32px;
 }

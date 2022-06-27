@@ -1,6 +1,6 @@
 {
-  "name": "MyBlazorPWA",
-  "short_name": "MyBlazorPWA",
+  "name": "WebOS",
+  "short_name": "WebOS",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",

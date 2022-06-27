@@ -6,12 +6,48 @@
      hidden=@IsStartMenuHidden
      tabindex=-1
      @onfocusout="DivLostFocus">
-     <div class="child-content">
-         Some Child Content
-     </div>
-     <div class="child-content">
-         Some More Child Content
-     </div>
+    <div class="start-menu-sidebar">
+        Windows 98
+    </div>
+    <div class="start-menu-shortcut-container">
+        @* TODO make this a component? *@
+        <div class="start-menu-shortcut">
+            <img class="start-menu-icon">
+            <div>
+                Programs
+            </div>
+        </div>
+        <div class="start-menu-shortcut">
+            <img class="start-menu-icon">
+            <div>
+                Photos
+            </div>
+        </div>
+        <div class="start-menu-shortcut">
+            <img class="start-menu-icon">
+            <div>
+                Games
+            </div>
+        </div>
+        <div class="start-menu-shortcut">
+            <img class="start-menu-icon">
+            <div>
+                Settings
+            </div>
+        </div>
+        <div class="start-menu-shortcut">
+            <img class="start-menu-icon">
+            <div>
+                Log Off
+            </div>
+        </div>
+        <div class="start-menu-shortcut">
+            <img class="start-menu-icon">
+            <div>
+                Shut Down
+            </div>
+        </div>
+    </div>
 </div>
 
 @code {
