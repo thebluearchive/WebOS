@@ -1,0 +1,15 @@
+@page "/ShuttingDown"
+@inject IJSRuntime js
+@layout EmptyLayout
+
+<div style="background-color: black;" class="shutting-down-container">
+    @text
+</div>
+
+@code {
+    string text = "Shutting down...";
+    protected async override Task OnInitializedAsync() {
+        await Task.Delay(5000); // pretend we are shutting down for 5 seconds
+        text = "";
+    }
+}

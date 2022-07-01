@@ -42,3 +42,12 @@ export function resizeEnd(e) {
     document.removeEventListener('mousemove', resizeEnd);
     //DotNetHelper.invokeMethodAsync('MouseUp', e);
 }
+
+
+export function getParentWidth(elemRef) {
+    return elemRef.parentElement.clientWidth;
+}
+
+export function getParentHeight(elemRef) {
+    return elemRef.parentElement.clientHeight;
+}

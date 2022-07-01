@@ -21,7 +21,7 @@
                 X
              </btn>
             <btn class="win-btn title-bar-button"
-                 @onclick="Window.Maximize">
+                 @onclick="Maximize">
                 [&nbsp;&nbsp;&nbsp;]
              </btn>
             <btn class="win-btn title-bar-button"
@@ -60,6 +60,23 @@
         dotNetHelper = DotNetObjectReference.Create(this);
         jsModule = await JS.InvokeAsync<IJSObjectReference>("import", "./Components/WindowWrapper.razor.js");
         Window.OnWindowStateChanged += (obj, args) => StateHasChanged();
+    }
+
+    private async Task Maximize() {
+        if (Window.windowState == WindowState.Windowed)
+        {
+            Window.windowState = WindowState.Maximized;
+        }
+        else if (Window.windowState == WindowState.Maximized)
+        {
+            Window.windowState = WindowState.Windowed;
+        }
+        
+        Window.XPos = 0;
+        Window.YPos = 0;
+        Window.Width = await jsModule.InvokeAsync<double>("getParentWidth", programContainer);
+        Window.Height = await jsModule.InvokeAsync<double>("getParentHeight", programContainer);
+        @* Window.OnWindowStateChanged.Invoke(this, EventArgs.Empty); *@
     }
 
     private async Task StartDrag(MouseEventArgs args)

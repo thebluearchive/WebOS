@@ -1,4 +1,6 @@
 ﻿@inject IJSRuntime JS
+@inject IWindowManager windowManager
+@inject NavigationManager NavManager
 
 <div id="start-menu"
      @ref="divReference"
@@ -10,10 +12,10 @@
         Windows 98
     </div>
     <div class="start-menu-shortcut-container">
-        <div class="start-menu-shortcut">
+        <div class="start-menu-shortcut" @onclick=OpenNotepad>
             <img src="/windows98-icons/png/notepad-5.png" class="start-menu-icon">
             <div>
-                NotePad
+                Notepad
             </div>
         </div>
         <div class="start-menu-shortcut">
@@ -46,7 +48,7 @@
                 Log Off
             </div>
         </div>
-        <div class="start-menu-shortcut">
+        <div class="start-menu-shortcut" @onclick=ShutDown>
             <img src="/windows98-icons/png/shut_down_normal-2.png" class="start-menu-icon">
             <div>
                 Shut Down
@@ -109,5 +111,20 @@
             return true;    
         }
         return false;
+    }
+
+    
+    private void OpenNotepad()
+    {
+        Window window = new();
+        //TODO: move the window naming code elsewhere
+        window.Name = $"Untitled.txt";
+        window.OnWindowStateChanged += (obj, args) => StateHasChanged();
+        windowManager.OpenNewWindow(window);
+    }
+
+    private void ShutDown()
+    {
+        NavManager.NavigateTo("/ShuttingDown");
     }
 }

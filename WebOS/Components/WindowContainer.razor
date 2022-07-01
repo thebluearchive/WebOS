@@ -11,8 +11,6 @@
     }
 </div>
 
-<button @onclick=OpenNewWindow>Open New Window</button>
-
 @code {
     protected override void OnInitialized()
     {
@@ -23,7 +21,7 @@
     {
         Window window = new();
         //TODO: move the window naming code elsewhere
-        window.Name = $"Test Program {windowManager.OpenWindows.Count}";
+        window.Name = $"Untitled.txt";
         window.OnWindowStateChanged += (obj, args) => StateHasChanged();
         windowManager.OpenNewWindow(window);
     }

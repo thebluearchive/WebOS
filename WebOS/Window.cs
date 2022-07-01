@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace WebOS
 {
@@ -17,6 +18,10 @@ namespace WebOS
 
         public WindowState windowState = WindowState.Windowed;
 
+        [Inject]
+        private IJSRuntime js { get; set; }
+        private IJSObjectReference jsModule;
+
         public void Minimize()
         {
             if (windowState == WindowState.Minimized)
@@ -32,22 +37,26 @@ namespace WebOS
             OnWindowStateChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        public void Maximize()
+        public async Task Maximize()
         {
-            throw new NotImplementedException();
-            //if (windowState == WindowState.Windowed)
-            //{
-            //    windowState = WindowState.Maximized;
-            //}
-            //else if (windowState == WindowState.Maximized)
-            //{
-            //    windowState = WindowState.Windowed;
-            //}
-            //XPos = 0;
-            //YPos = 0;
-            //Width = "100%";
-            //Height = "100%";
-            //OnWindowStateChanged?.Invoke(this, EventArgs.Empty);
+            if (windowState == WindowState.Windowed)
+            {
+               windowState = WindowState.Maximized;
+            }
+            else if (windowState == WindowState.Maximized)
+            {
+               windowState = WindowState.Windowed;
+            }
+
+            if (jsModule is null) {
+                jsModule = await js.InvokeAsync<IJSObjectReference>("import", "./Window.js");
+            }
+            
+            XPos = 0;
+            YPos = 0;
+            Width = await jsModule.InvokeAsync<int>("getParentWidth");
+            Height = await jsModule.InvokeAsync<int>("getParentHeight");
+            OnWindowStateChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void Close()
