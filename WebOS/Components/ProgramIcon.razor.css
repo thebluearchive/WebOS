@@ -1,0 +1,17 @@
+.program-icon {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 64px;
+    height: 64px;
+}
+
+.program-icon > img {
+    width: 32px;
+    height: 32px;
+}
+
+.program-title {
+    flex-wrap: wrap;
+}

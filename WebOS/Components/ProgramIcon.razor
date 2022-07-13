@@ -1,0 +1,15 @@
+<div class="program-icon" @ondblclick=@(() => UserDoubleClicked.InvokeAsync())>
+    <img src="@ImageSource">
+    <div class="program-title">
+        <p>@Title</p>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string ImageSource { get; set; } = "";
+    [Parameter]
+    public string Title { get; set; } = "";
+    [Parameter]
+    public EventCallback<MouseEventArgs> UserDoubleClicked { get; set; }
+}

@@ -1,3 +1,18 @@
 ﻿
 <div class="background">
+    <ProgramIcon
+        Title="Notepad"
+        ImageSource="/windows98-icons/ico/directory_program_group.ico"
+        @UserDoubleClicked=UserDoubleClicked>
+    </ProgramIcon>
+    <ProgramIcon
+        Title="Test"
+        ImageSource="/windows98-icons/ico/directory_program_group.ico">
+    </ProgramIcon>
 </div>
+
+@code {
+    private void UserDoubleClicked() {
+        Console.WriteLine("User double clicked");
+    }
+}
